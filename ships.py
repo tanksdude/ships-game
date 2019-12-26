@@ -17,6 +17,15 @@ class Ship():
 							[self.pos[0]+5, self.pos[1]+5],
 							[self.pos[0]-5, self.pos[1]+5]
 						]
+		self.x_vel = 0
+		self.y_vel = 0
+
+	def update_pos(self, x_vel, y_vel):
+		self.pos[0] += self.x_vel
+		self.pos[1] += self.y_vel
+
+	def rotate():
+		return None
 
 
 class Player_Ship(Ship):
