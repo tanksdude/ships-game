@@ -23,7 +23,13 @@ class Ship():
 	def set_vel(self, new_x_vel, new_y_vel):
 		self.x_vel = new_x_vel
 		self.y_vel = new_y_vel
-		
+
+	def get_x_vel(self):
+		return self.x_vel
+
+	def get_y_vel(self):
+		return self.y_vel
+
 	def update_pos(self, x_vel, y_vel):
 		self.pos[0] += x_vel
 		self.pos[1] += y_vel

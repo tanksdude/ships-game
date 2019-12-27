@@ -25,7 +25,7 @@ class Field(Canvas):
 	def onTimer(self):
 		"""contains actions of each frame"""
 		#add code
-		self.update_ships(self.player, self.enemy)
+		self.move_ships(self.player, self.enemy)
 		self.draw_ships(self.player, self.enemy)
 		self.after(Constants.DELAY, self.onTimer)
 
@@ -48,9 +48,9 @@ class Field(Canvas):
 		self.create_polygon(plyr.vertices[0], plyr.vertices[1], plyr.vertices[2],outline='#f11',
     			fill='#1f1', width=2, tag = "plyr_body")
 		self.create_polygon(enmy.vertices[0], enmy.vertices[1], enmy.vertices[2],outline='#f11',
-    			fill='#1f1', width=2, tage= "enmy_body")
+    			fill='#1f1', width=2, tag= "enmy_body")
 		
-	def update_ships(self, plyr, enmy):
+	def move_ships(self, plyr, enmy):
 		plyr.update_pos(plyr.x_vel, plyr.y_vel)
 
 class GUI(Frame):
