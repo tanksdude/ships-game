@@ -20,9 +20,16 @@ class Ship():
 		self.x_vel = 0
 		self.y_vel = 0
 
+	def set_vel(self, new_x_vel, new_y_vel):
+		self.x_vel = new_x_vel
+		self.y_vel = new_y_vel
+		
 	def update_pos(self, x_vel, y_vel):
-		self.pos[0] += self.x_vel
-		self.pos[1] += self.y_vel
+		self.pos[0] += x_vel
+		self.pos[1] += y_vel
+		for point in self.vertices:
+			point[0] += x_vel
+			point[1] += y_vel
 
 	def rotate():
 		return None
