@@ -1,4 +1,4 @@
-
+import pygame
 
 class Ship():
 
@@ -17,18 +17,23 @@ class Ship():
 							[self.pos[0]+5, self.pos[1]+5],
 							[self.pos[0]-5, self.pos[1]+5]
 						]
-		self.x_vel = 0
-		self.y_vel = 0
+		self.vel = [0, 0]
 
 	def set_vel(self, new_x_vel, new_y_vel):
-		self.x_vel = new_x_vel
-		self.y_vel = new_y_vel
+		self.vel[0] = new_x_vel
+		self.vel[1] = new_y_vel
 
 	def get_x_vel(self):
-		return self.x_vel
+		return self.vel[0]
 
 	def get_y_vel(self):
-		return self.y_vel
+		return self.vel[1]
+
+	def get_x_pos(self):
+		return self.pos[0]
+
+	def get_y_pos(self):
+		return self.pos[1]
 
 	def update_pos(self, x_vel, y_vel):
 		self.pos[0] += x_vel
@@ -43,13 +48,14 @@ class Ship():
 
 class Player_Ship(Ship):
 
-	def control():
+	def check_input(self):
 		#add code
-		return None
+		keys = pygame.key.get_pressed()
 
 
 class Enemy_Ship(Ship):
 
-	def control():
+	def control(self):
 		#add code
 		return None
+
