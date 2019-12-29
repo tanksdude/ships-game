@@ -1,9 +1,10 @@
 import pygame
+from GUI import *
 
 class Ship():
 
 	health = 0
-	speed = 1
+	speed = 2
 	damage = 1
 	mode = 'attack'
 	power_up = None
@@ -12,7 +13,7 @@ class Ship():
 		self.hp = health
 		self.pos = position
 		self.dir = direction
-		self.vertices = [
+		self.verts = [
 							[self.pos[0], self.pos[1]-10],
 							[self.pos[0]+5, self.pos[1]+5],
 							[self.pos[0]-5, self.pos[1]+5]
@@ -35,22 +36,33 @@ class Ship():
 	def get_y_pos(self):
 		return self.pos[1]
 
-	def update_pos(self, x_vel, y_vel):
-		self.pos[0] += x_vel
-		self.pos[1] += y_vel
-		for point in self.vertices:
-			point[0] += x_vel
-			point[1] += y_vel
+	def update_pos(self):
+		self.pos[0] += self.vel[0]
+		self.pos[1] += self.vel[1]
+		for point in self.verts:
+			point[0] += self.vel[0]
+			point[1] += self.vel[1]
 
-	def rotate():
-		return None
-
+	def draw(self, surface, color):
+		pygame.draw.polygon(surface, color, (self.verts[0], self.verts[1], self.verts[2]))
 
 class Player_Ship(Ship):
 
 	def check_input(self):
 		#add code
 		keys = pygame.key.get_pressed()
+		if keys[pygame.K_d]:
+			self.vel[0] = Ship.speed
+		elif keys[pygame.K_a]:
+			self.vel[0] = -Ship.speed
+		else:
+			self.vel[0] = 0
+		if keys[pygame.K_w]:
+			self.vel[1] = -Ship.speed
+		elif keys[pygame.K_s]:
+			self.vel[1] = Ship.speed
+		else:
+			self.vel[1] = 0
 
 
 class Enemy_Ship(Ship):
