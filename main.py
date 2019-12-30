@@ -23,8 +23,10 @@ def main():
 			pygame.quit()
 
 	def update_objects():
-		player.check_input()
+		player.vel_update()
+		player.ang_vel_update()
 		player.update_pos()
+		player.update_dir()
 		player.draw(field_display, (255, 0, 0))
 
 	run_game()
