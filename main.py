@@ -1,10 +1,11 @@
 from ships import *
 from GUI import *
+import math
 
 
 def main():
-	player = Player_Ship(3, [50, 50], 90)
-	enemy = Enemy_Ship(3, [100, 100], 90)
+	player = Player_Ship(3, [50, 50], math.pi/2)
+	enemy = Enemy_Ship(3, [100, 100], math.pi/2)
 	field_display = pygame.display.set_mode((WIDTH, HEIGHT))
 
 	def run_game():
@@ -16,13 +17,13 @@ def main():
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						run = False
-				update_objects()
+				update_player()
 				pygame.display.update()
 				field_display.fill((0,0,0))
 
 			pygame.quit()
 
-	def update_objects():
+	def update_player():
 		player.vel_update()
 		player.ang_vel_update()
 		player.update_pos()
@@ -35,4 +36,4 @@ def main():
 
 main()
 
-#python3 main.py
+#.       python3 main.py

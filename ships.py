@@ -5,7 +5,7 @@ import math
 class Ship():
 
 	health = 0
-	speed = 4
+	speed = 200 / DELAY
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	mode = 'attack'
@@ -27,18 +27,6 @@ class Ship():
 		self.vel[0] = new_x_vel
 		self.vel[1] = new_y_vel
 
-	def get_x_vel(self):
-		return self.vel[0]
-
-	def get_y_vel(self):
-		return self.vel[1]
-
-	def get_x_pos(self):
-		return self.pos[0]
-
-	def get_y_pos(self):
-		return self.pos[1]
-
 	def update_pos(self):
 		"""updates the position of the ship based on its velocity"""
 
@@ -52,6 +40,8 @@ class Ship():
 		"""updates the direction and calculates new vertices using the rotation matrix"""
 
 		self.dir += self.ang_vel
+		if self.dir == 2 * math.pi:
+			self.dir = 0
 		for point in self.verts:
 			diff_x = point[0] - self.pos[0]
 			diff_y = point[1] - self.pos[1]
@@ -68,38 +58,40 @@ class Player_Ship(Ship):
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_d]:
-			self.vel[0] = Ship.speed
+			self.vel[0] = Ship.speed * math.sin(self.dir)
+			self.vel[1] = - Ship.speed * math.cos(self.dir)
 			if keys[pygame.K_w]:
-				self.vel[0] =  Ship.diagonal_speed
-				self.vel[1] = - Ship.diagonal_speed
+				self.vel[0] = Ship.diagonal_speed * math.sin(self.dir) - Ship.diagonal_speed * math.cos(self.dir)
+				self.vel[1] = - Ship.diagonal_speed  * math.cos(self.dir) - Ship.diagonal_speed * math.sin(self.dir)
 			elif keys[pygame.K_s]:
-				self.vel[0] = Ship.diagonal_speed
-				self.vel[1] = Ship.diagonal_speed
+				self.vel[0] = Ship.diagonal_speed * math.sin(self.dir) + Ship.diagonal_speed * math.cos(self.dir)
+				self.vel[1] = - Ship.diagonal_speed * math.cos(self.dir) + Ship.diagonal_speed * math.sin(self.dir)
 		elif keys[pygame.K_a]:
-			self.vel[0] = -Ship.speed
+			self.vel[0] = - Ship.speed * math.sin(self.dir)
+			self.vel[1] = Ship.speed * math.cos(self.dir)
 			if keys[pygame.K_w]:
-				self.vel[0] = - Ship.diagonal_speed
-				self.vel[1] = - Ship.diagonal_speed
+				self.vel[0] = - Ship.diagonal_speed * math.cos(self.dir) - Ship.diagonal_speed * math.sin(self.dir)
+				self.vel[1] = Ship.diagonal_speed * math.cos(self.dir) - Ship.diagonal_speed * math.sin(self.dir)
 			elif keys[pygame.K_s]:
-				self.vel[0] = - Ship.diagonal_speed
-				self.vel[1] = Ship.diagonal_speed
-		else:
-			self.vel[0] = 0
-		if keys[pygame.K_w]:
-			self.vel[1] = - Ship.speed
+				self.vel[0] = - Ship.diagonal_speed * math.sin(self.dir) + Ship.diagonal_speed * math.cos(self.dir)
+				self.vel[1] = Ship.diagonal_speed * math.cos(self.dir) + Ship.diagonal_speed * math.sin(self.dir)
+		elif keys[pygame.K_w]:
+			self.vel[0] = - Ship.speed * math.cos(self.dir)
+			self.vel[1] = - Ship.speed * math.sin(self.dir)
 		elif keys[pygame.K_s]:
-			self.vel[1] = Ship.speed
+			self.vel[0] = Ship.speed * math.cos(self.dir)
+			self.vel[1] = Ship.speed * math.sin(self.dir)
 		else:
-			self.vel[1] = 0
+			self.vel = [0, 0]
 
 	def ang_vel_update(self):
 		"""changes the ship angular velocity based on user input"""
  
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_LEFT]:
-			self.ang_vel = -0.3
+			self.ang_vel = - math.pi / 10
 		elif keys[pygame.K_RIGHT]:
-			self.ang_vel = 0.3
+			self.ang_vel = math.pi / 10
 		else:
 			self.ang_vel = 0
 

@@ -3,4 +3,4 @@ import pygame
 
 WIDTH = 300
 HEIGHT = 300
-DELAY = 100
+DELAY = 50
