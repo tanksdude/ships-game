@@ -1,5 +1,5 @@
 from ships import *
-from GUI import *
+from utils import *
 import math
 
 

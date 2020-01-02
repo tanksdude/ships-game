@@ -1,5 +1,5 @@
 import pygame
-from GUI import *
+from utils import *
 import math
 
 class Ship():
@@ -8,7 +8,7 @@ class Ship():
 	speed = 200 / DELAY
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
-	mode = 'attack'
+	attack_mode = True
 	power_up = None
 
 	def __init__(self, health, position, direction):
@@ -23,8 +23,10 @@ class Ship():
 		self.vel = [0, 0]
 		self.ang_vel = 0
 
-	def set_vel(self, new_x_vel, new_y_vel):
+	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
+
+	def set_y_vel(self, new_y_vel):
 		self.vel[1] = new_y_vel
 
 	def update_pos(self):
@@ -53,36 +55,61 @@ class Ship():
 
 class Player_Ship(Ship):
 
+	def mode_update(self):
+		 keys = pygame.key.get_pressed()
+		 if keys[pygame.K_e]:
+		 	self.attack_mode = False
+		 else:
+		 	self.attack_mode = True
+
 	def vel_update(self):
+		self.mode_update()
+		if self.attack_mode:
+			self.attack_mode_vel_update()
+		else:
+			self.speed_mode_vel_update()
+
+	def attack_mode_vel_update(self):
 		"""changes the ship velocity based on user input"""
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_d]:
-			self.vel[0] = Ship.speed * math.sin(self.dir)
-			self.vel[1] = - Ship.speed * math.cos(self.dir)
+			self.set_x_vel(y_comp(Ship.speed, self.dir))
+			self.set_y_vel(- x_comp(Ship.speed, self.dir))
 			if keys[pygame.K_w]:
-				self.vel[0] = Ship.diagonal_speed * math.sin(self.dir) - Ship.diagonal_speed * math.cos(self.dir)
-				self.vel[1] = - Ship.diagonal_speed  * math.cos(self.dir) - Ship.diagonal_speed * math.sin(self.dir)
+				self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) - x_comp(Ship.diagonal_speed, self.dir))
+				self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
 			elif keys[pygame.K_s]:
-				self.vel[0] = Ship.diagonal_speed * math.sin(self.dir) + Ship.diagonal_speed * math.cos(self.dir)
-				self.vel[1] = - Ship.diagonal_speed * math.cos(self.dir) + Ship.diagonal_speed * math.sin(self.dir)
+				self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
+				self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
 		elif keys[pygame.K_a]:
-			self.vel[0] = - Ship.speed * math.sin(self.dir)
-			self.vel[1] = Ship.speed * math.cos(self.dir)
+			self.set_x_vel(- y_comp(Ship.speed, self.dir))
+			self.set_y_vel(x_comp(Ship.speed, self.dir))
 			if keys[pygame.K_w]:
-				self.vel[0] = - Ship.diagonal_speed * math.cos(self.dir) - Ship.diagonal_speed * math.sin(self.dir)
-				self.vel[1] = Ship.diagonal_speed * math.cos(self.dir) - Ship.diagonal_speed * math.sin(self.dir)
+				self.set_x_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
+				self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
 			elif keys[pygame.K_s]:
-				self.vel[0] = - Ship.diagonal_speed * math.sin(self.dir) + Ship.diagonal_speed * math.cos(self.dir)
-				self.vel[1] = Ship.diagonal_speed * math.cos(self.dir) + Ship.diagonal_speed * math.sin(self.dir)
+				self.set_x_vel(- y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
+				self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
 		elif keys[pygame.K_w]:
-			self.vel[0] = - Ship.speed * math.cos(self.dir)
-			self.vel[1] = - Ship.speed * math.sin(self.dir)
+			self.set_x_vel(- x_comp(Ship.speed, self.dir))
+			self.set_y_vel(- y_comp(Ship.speed, self.dir))
 		elif keys[pygame.K_s]:
-			self.vel[0] = Ship.speed * math.cos(self.dir)
-			self.vel[1] = Ship.speed * math.sin(self.dir)
+			self.set_x_vel(x_comp(Ship.speed, self.dir))
+			self.set_y_vel(y_comp(Ship.speed, self.dir))
 		else:
 			self.vel = [0, 0]
+
+	def speed_mode_vel_update(self):
+
+		keys = pygame.key.get_pressed()
+		if keys[pygame.K_w]:
+			self.set_x_vel(- x_comp(Ship.speed * 2, self.dir))
+			self.set_y_vel(- y_comp(Ship.speed * 2, self.dir))
+		else:
+			self.vel = [0, 0]
+
+
 
 	def ang_vel_update(self):
 		"""changes the ship angular velocity based on user input"""
