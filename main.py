@@ -17,22 +17,13 @@ def main():
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						run = False
-				update_player()
+				player.update_all(field_display)
 				pygame.display.update()
 				field_display.fill((0,0,0))
 
-			pygame.quit()
-
-	def update_player():
-		player.vel_update()
-		player.ang_vel_update()
-		player.update_pos()
-		player.update_dir()
-		player.draw(field_display, (255, 0, 0))
+			pygame.quit()	
 
 	run_game()
-
-
 
 main()
 
