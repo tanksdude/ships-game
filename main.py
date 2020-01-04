@@ -1,6 +1,7 @@
 from ships import *
 from utils import *
 import math
+import laser
 
 
 def main():
@@ -17,12 +18,7 @@ def main():
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						run = False
-				for laser in laser_list: # TODO: move this code somewhere else, like to a class that manages lasers
-					laser.update_pos()
-					if laser.out_of_bounds():
-						laser_list.remove(laser)
-						continue
-					laser.draw(field_display)
+				Laser_Manager.update_lasers(field_display)
 				player.update_all(field_display)
 				pygame.display.update()
 				field_display.fill((0,0,0))
