@@ -135,20 +135,9 @@ class Player_Ship(Ship):
 	def fire_laser(self):
 		"""fires by initializing a laser object and storing it in the ship's fired lasers"""
 
-		self.lasers_fired.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
-
-	def update_lasers(self):
-		"""fires laser if player presses space and updates all lasers fired by the player"""
-
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_SPACE]:
-			self.fire_laser()
-		for laser in self.lasers_fired:
-			laser.update_pos()
-			if laser.out_of_bounds():
-				self.lasers_fired.remove(laser)
-
-		#print(len(self.lasers_fired))
+			laser_list.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
 
 	def update_all(self, field_display):
 		self.vel_update()
@@ -156,9 +145,7 @@ class Player_Ship(Ship):
 		self.update_pos()
 		self.update_dir()
 		self.draw(field_display)
-		self.update_lasers()
-		for laser in self.lasers_fired:
-			laser.draw(field_display)
+		self.fire_laser()
 
 class Enemy_Ship(Ship):
 
