@@ -38,11 +38,11 @@ class Ship():
 	def update_pos(self):
 		"""updates the position of the ship based on its velocity"""
 
-		self.pos[0] += x_comp(self.vel[0], self.vel[1])
-		self.pos[1] += y_comp(self.vel[0], self.vel[1])
+		self.pos[0] += self.vel[0]
+		self.pos[1] += self.vel[1]
 		for point in self.verts:
-			point[0] += x_comp(self.vel[0], self.vel[1])
-			point[1] += y_comp(self.vel[0], self.vel[1])
+			point[0] += self.vel[0]
+			point[1] += self.vel[1]
 
 	def update_dir(self):
 		"""updates the direction and calculates new vertices using the rotation matrix"""
@@ -91,8 +91,6 @@ class Player_Ship(Ship):
 		def attack_mode_vel_update():
 			"""changes the ship velocity in attack mode based on user input"""
 
-			# future update for when velocity is a vector but not an array
-			'''
 			vel = [0, 0] # x and y components relative to actual ship
 
 			if keys[pygame.K_d]:
@@ -105,31 +103,14 @@ class Player_Ship(Ship):
 				vel[1] -= Ship.speed
 			
 			# translate relative velocity into true velocity
-			self.vel = [x_comp(vel[0], self.dir) + x_comp(vel[1], self.dir + math.pi/4), y_comp(vel[0], self.dir) + y_comp(vel[1], self.dir + math.pi/4)]
-			'''
+			self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
+			self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
 
-			if keys[pygame.K_d]:
-				self.vel = [Ship.speed, self.dir - math.pi / 2]
-				if keys[pygame.K_w]:
-					self.vel = [Ship.speed, self.dir - 3 * math.pi / 4]
-				elif keys[pygame.K_s]:
-					self.vel = [Ship.speed, self.dir - math.pi / 4]
-			elif keys[pygame.K_a]:
-				self.vel = [Ship.speed, self.dir + math.pi / 2]
-				if keys[pygame.K_w]:
-					self.vel = [Ship.speed, self.dir + 3 * math.pi / 4]
-				elif keys[pygame.K_s]:
-					self.vel = [Ship.speed, self.dir + math.pi / 4]
-			elif keys[pygame.K_w]:
-				self.vel = [Ship.speed, self.dir + math.pi]
-			elif keys[pygame.K_s]:
-				self.vel = [Ship.speed, self.dir]
-			else:
-				self.vel = [0, 0]
+			#print(vel[0], vel[1])
 
 		def speed_mode_vel_update():
 			"""changes the ship velocity in speed mode based on user input"""
-
+			
 			if keys[pygame.K_w]:
 				self.set_x_vel(- x_comp(Ship.speed * 2, self.dir))
 				self.set_y_vel(- y_comp(Ship.speed * 2, self.dir))
