@@ -20,14 +20,14 @@ class Ship():
 		self.pos = position
 		self.dir = direction
 		self.verts = [
-							[self.pos[0], self.pos[1]-10],
-							[self.pos[0]+5, self.pos[1]+5],
-							[self.pos[0]-5, self.pos[1]+5]
-						]
+			[self.pos[0],   self.pos[1]-10],
+			[self.pos[0]+5, self.pos[1]+5],
+			[self.pos[0]-5, self.pos[1]+5]
+		]
 		self.vel = [0, 0]
 		self.ang_vel = 0
 		self.lasers_fired = []
-		self.color = (0, 0, 0)
+		self.color = (255, 255, 255)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
