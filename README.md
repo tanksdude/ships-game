@@ -19,6 +19,9 @@ The battlefield is randomized and there are power-ups to collect in order to def
 3. `cd Scripts`
 4. `pip install pygame`
 
-### Non-Windows set-up
+### Mac set-up
+1. Open terminal
+2. `sudo pip install pygame`
+3. type in password
 
 currently unknown
