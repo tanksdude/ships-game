@@ -27,6 +27,7 @@ class Ship():
 		self.vel = [0, 0]
 		self.ang_vel = 0
 		self.lasers_fired = []
+		self.color = (0, 0, 0)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
@@ -54,10 +55,14 @@ class Ship():
 			point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
 			point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
 	
-	def draw(self, surface, color):
-		pygame.draw.polygon(surface, color, (self.verts[0], self.verts[1], self.verts[2]))
+	def draw(self, surface):
+		pygame.draw.polygon(surface, self.color, (self.verts[0], self.verts[1], self.verts[2]))
 
 class Player_Ship(Ship):
+
+	def __init__(self, health, position, direction):
+		super().__init__(health, position, direction)
+		self.color = (255, 0, 0)
 
 	def mode_update(self):
 		"""changes the ship's mode based on if "e" is pressed"""
@@ -132,7 +137,7 @@ class Player_Ship(Ship):
 	def fire_laser(self):
 		"""fires by initializing a laser object and storing it in the ship's fired lasers"""
 
-		self.lasers_fired.append(Laser(self.pos[:], self.dir))
+		self.lasers_fired.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
 
 	def update_lasers(self):
 		"""fires laser if player presses space and updates all lasers fired by the player"""
@@ -152,10 +157,10 @@ class Player_Ship(Ship):
 		self.ang_vel_update()
 		self.update_pos()
 		self.update_dir()
-		self.draw(field_display, (255, 0, 0))
+		self.draw(field_display)
 		self.update_lasers()
 		for laser in self.lasers_fired:
-			laser.draw(field_display, (255, 0, 0))
+			laser.draw(field_display)
 
 class Enemy_Ship(Ship):
 
