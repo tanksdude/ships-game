@@ -10,6 +10,9 @@ class Ship():
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True
+	attack_mode_key_toggle = True
+	attack_mode_key_toggle_other = True
+	attack_mode_last_state = True
 	power_up = None
 
 	def __init__(self, health, position, direction):
@@ -44,8 +47,7 @@ class Ship():
 		"""updates the direction and calculates new vertices using the rotation matrix"""
 
 		self.dir += self.ang_vel
-		if self.dir == 2 * math.pi:
-			self.dir = 0
+		self.dir %= 2 * math.pi
 		for point in self.verts:
 			diff_x = point[0] - self.pos[0]
 			diff_y = point[1] - self.pos[1]
@@ -61,10 +63,18 @@ class Player_Ship(Ship):
 		"""changes the ship's mode based on if "e" is pressed"""
 
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_e]:
-	 		self.attack_mode = False
-		else:
-		 	self.attack_mode = True
+		new_attack_mode_state = not keys[pygame.K_e]
+
+		if self.attack_mode_last_state != new_attack_mode_state:
+			self.attack_mode_key_toggle = not self.attack_mode_key_toggle
+			if self.attack_mode_key_toggle:
+				self.attack_mode_key_toggle_other = not self.attack_mode_key_toggle_other
+		if self.attack_mode_key_toggle_other:
+			self.attack_mode = new_attack_mode_state
+		
+		#print(self.attack_mode_last_state, self.attack_mode_key_toggle, self.attack_mode_key_toggle_other, new_attack_mode_state)
+
+		self.attack_mode_last_state = new_attack_mode_state
 
 	def vel_update(self):
 		"""determines how to update the ship's velocity based on its mode"""
