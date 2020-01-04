@@ -102,6 +102,13 @@ class Player_Ship(Ship):
 			if keys[pygame.K_s]:
 				vel[1] -= Ship.speed
 			
+			# normalize velocity
+			magnitude = (vel[0]**2 + vel[1]**2) ** .5
+			if magnitude > Ship.speed:
+				magnitude /= Ship.speed # make the magnitude relative to Ship.speed
+				vel[0] /= magnitude
+				vel[1] /= magnitude
+			
 			# translate relative velocity into true velocity
 			self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
 			self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
