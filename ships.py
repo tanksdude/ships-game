@@ -34,11 +34,11 @@ class Ship():
 	def update_pos(self):
 		"""updates the position of the ship based on its velocity"""
 
-		self.pos[0] += self.vel[0]
-		self.pos[1] += self.vel[1]
+		self.pos[0] += x_comp(self.vel[0], self.vel[1])
+		self.pos[1] += y_comp(self.vel[0], self.vel[1])
 		for point in self.verts:
-			point[0] += self.vel[0]
-			point[1] += self.vel[1]
+			point[0] += x_comp(self.vel[0], self.vel[1])
+			point[1] += y_comp(self.vel[0], self.vel[1])
 
 	def update_dir(self):
 		"""updates the direction and calculates new vertices using the rotation matrix"""
@@ -76,29 +76,21 @@ class Player_Ship(Ship):
 			"""changes the ship velocity in attack mode based on user input"""
 
 			if keys[pygame.K_d]:
-				self.set_x_vel(y_comp(Ship.speed, self.dir))
-				self.set_y_vel(- x_comp(Ship.speed, self.dir))
+				self.vel = [Ship.speed, self.dir - math.pi / 2]
 				if keys[pygame.K_w]:
-					self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) - x_comp(Ship.diagonal_speed, self.dir))
-					self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
+					self.vel = [Ship.speed, self.dir - 3 * math.pi / 4]
 				elif keys[pygame.K_s]:
-					self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
-					self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
+					self.vel = [Ship.speed, self.dir - math.pi / 4]
 			elif keys[pygame.K_a]:
-				self.set_x_vel(- y_comp(Ship.speed, self.dir))
-				self.set_y_vel(x_comp(Ship.speed, self.dir))
+				self.vel = [Ship.speed, self.dir + math.pi / 2]
 				if keys[pygame.K_w]:
-					self.set_x_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
-					self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
+					self.vel = [Ship.speed, self.dir + 3 * math.pi / 4]
 				elif keys[pygame.K_s]:
-					self.set_x_vel(- y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
-					self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
+					self.vel = [Ship.speed, self.dir + math.pi / 4]
 			elif keys[pygame.K_w]:
-				self.set_x_vel(- x_comp(Ship.speed, self.dir))
-				self.set_y_vel(- y_comp(Ship.speed, self.dir))
+				self.vel = [Ship.speed, self.dir + math.pi]
 			elif keys[pygame.K_s]:
-				self.set_x_vel(x_comp(Ship.speed, self.dir))
-				self.set_y_vel(y_comp(Ship.speed, self.dir))
+				self.vel = [Ship.speed, self.dir]
 			else:
 				self.vel = [0, 0]
 
