@@ -69,52 +69,52 @@ class Player_Ship(Ship):
 	def vel_update(self):
 		"""determines how to update the ship's velocity based on its mode"""
 
+		keys = pygame.key.get_pressed()
 		self.mode_update()
+
+		def attack_mode_vel_update():
+			"""changes the ship velocity in attack mode based on user input"""
+
+			if keys[pygame.K_d]:
+				self.set_x_vel(y_comp(Ship.speed, self.dir))
+				self.set_y_vel(- x_comp(Ship.speed, self.dir))
+				if keys[pygame.K_w]:
+					self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) - x_comp(Ship.diagonal_speed, self.dir))
+					self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
+				elif keys[pygame.K_s]:
+					self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
+					self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
+			elif keys[pygame.K_a]:
+				self.set_x_vel(- y_comp(Ship.speed, self.dir))
+				self.set_y_vel(x_comp(Ship.speed, self.dir))
+				if keys[pygame.K_w]:
+					self.set_x_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
+					self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
+				elif keys[pygame.K_s]:
+					self.set_x_vel(- y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
+					self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
+			elif keys[pygame.K_w]:
+				self.set_x_vel(- x_comp(Ship.speed, self.dir))
+				self.set_y_vel(- y_comp(Ship.speed, self.dir))
+			elif keys[pygame.K_s]:
+				self.set_x_vel(x_comp(Ship.speed, self.dir))
+				self.set_y_vel(y_comp(Ship.speed, self.dir))
+			else:
+				self.vel = [0, 0]
+
+		def speed_mode_vel_update():
+			"""changes the ship velocity in speed mode based on user input"""
+
+			if keys[pygame.K_w]:
+				self.set_x_vel(- x_comp(Ship.speed * 2, self.dir))
+				self.set_y_vel(- y_comp(Ship.speed * 2, self.dir))
+			else:
+				self.vel = [0, 0]
+
 		if self.attack_mode:
-			self.attack_mode_vel_update()
+			attack_mode_vel_update()
 		else:
-			self.speed_mode_vel_update()
-
-	def attack_mode_vel_update(self):
-		"""changes the ship velocity in attack mode based on user input"""
-
-		keys = pygame.key.get_pressed()
-		if keys[pygame.K_d]:
-			self.set_x_vel(y_comp(Ship.speed, self.dir))
-			self.set_y_vel(- x_comp(Ship.speed, self.dir))
-			if keys[pygame.K_w]:
-				self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) - x_comp(Ship.diagonal_speed, self.dir))
-				self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
-			elif keys[pygame.K_s]:
-				self.set_x_vel(y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
-				self.set_y_vel(- x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
-		elif keys[pygame.K_a]:
-			self.set_x_vel(- y_comp(Ship.speed, self.dir))
-			self.set_y_vel(x_comp(Ship.speed, self.dir))
-			if keys[pygame.K_w]:
-				self.set_x_vel(- x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
-				self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) - y_comp(Ship.diagonal_speed, self.dir))
-			elif keys[pygame.K_s]:
-				self.set_x_vel(- y_comp(Ship.diagonal_speed, self.dir) + x_comp(Ship.diagonal_speed, self.dir))
-				self.set_y_vel(x_comp(Ship.diagonal_speed, self.dir) + y_comp(Ship.diagonal_speed, self.dir))
-		elif keys[pygame.K_w]:
-			self.set_x_vel(- x_comp(Ship.speed, self.dir))
-			self.set_y_vel(- y_comp(Ship.speed, self.dir))
-		elif keys[pygame.K_s]:
-			self.set_x_vel(x_comp(Ship.speed, self.dir))
-			self.set_y_vel(y_comp(Ship.speed, self.dir))
-		else:
-			self.vel = [0, 0]
-
-	def speed_mode_vel_update(self):
-		"""changes the ship velocity in speed mode based on user input"""
-
-		keys = pygame.key.get_pressed()
-		if keys[pygame.K_w]:
-			self.set_x_vel(- x_comp(Ship.speed * 2, self.dir))
-			self.set_y_vel(- y_comp(Ship.speed * 2, self.dir))
-		else:
-			self.vel = [0, 0]
+			speed_mode_vel_update()
 
 	def ang_vel_update(self):
 		"""changes the ship angular velocity based on user input"""
