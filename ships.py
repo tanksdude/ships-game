@@ -142,6 +142,10 @@ class Player_Ship(Ship):
 			self.fire_laser()
 		for laser in self.lasers_fired:
 			laser.update_pos()
+			if laser.out_of_bounds():
+				self.lasers_fired.remove(laser)
+
+		#print(len(self.lasers_fired))
 
 	def update_all(self, field_display):
 		self.vel_update()
