@@ -21,3 +21,6 @@ class Laser():
 		self.pos[0] += self.vel[0]
 		self.pos[1] += self.vel[1]
 
+	def out_of_bounds(self):
+		return (self.pos[0] - self.radius < 0) or (self.pos[0] + self.radius > WIDTH) or (self.pos[1] - self.radius < 0) or (self.pos[1] + self.radius > HEIGHT)
+
