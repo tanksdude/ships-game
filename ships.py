@@ -10,7 +10,7 @@ class Ship():
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True
-	attack_mode_key_toggle = True # updates when the attack mode key is pressed
+	attack_mode_key_toggle = True # updates when the attack mode key goes up or down
 	attack_mode_key_toggle_other = True # updates when ↑ changes, so the end effect is this changes when the key goes down
 	attack_mode_last_state = True
 	power_up = None
@@ -74,6 +74,7 @@ class Player_Ship(Ship):
 			self.attack_mode_key_toggle = not self.attack_mode_key_toggle
 			if self.attack_mode_key_toggle:
 				self.attack_mode_key_toggle_other = not self.attack_mode_key_toggle_other
+		
 		if self.attack_mode_key_toggle_other:
 			self.attack_mode = new_attack_mode_state
 		
@@ -89,6 +90,23 @@ class Player_Ship(Ship):
 
 		def attack_mode_vel_update():
 			"""changes the ship velocity in attack mode based on user input"""
+
+			# future update for when velocity is a vector but not an array
+			'''
+			vel = [0, 0] # x and y components relative to actual ship
+
+			if keys[pygame.K_d]:
+				vel[0] += Ship.speed
+			if keys[pygame.K_a]:
+				vel[0] -= Ship.speed
+			if keys[pygame.K_w]:
+				vel[1] += Ship.speed
+			if keys[pygame.K_s]:
+				vel[1] -= Ship.speed
+			
+			# translate relative velocity into true velocity
+			self.vel = [x_comp(vel[0], self.dir) + x_comp(vel[1], self.dir + math.pi/4), y_comp(vel[0], self.dir) + y_comp(vel[1], self.dir + math.pi/4)]
+			'''
 
 			if keys[pygame.K_d]:
 				self.vel = [Ship.speed, self.dir - math.pi / 2]
