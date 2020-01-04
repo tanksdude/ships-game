@@ -10,8 +10,8 @@ class Ship():
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True
-	attack_mode_key_toggle = True
-	attack_mode_key_toggle_other = True
+	attack_mode_key_toggle = True # updates when the attack mode key is pressed
+	attack_mode_key_toggle_other = True # updates when ↑ changes, so the end effect is this changes when the key goes down
 	attack_mode_last_state = True
 	power_up = None
 
