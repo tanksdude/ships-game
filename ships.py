@@ -24,7 +24,6 @@ class Ship():
 			[self.pos[0]+7, self.pos[1]+5],
 			[self.pos[0]-7, self.pos[1]+5]
 		]
-
 		self.r_gun_verts = []
 		self.l_gun_verts = []
 		self.r_wing_verts = [
@@ -68,21 +67,16 @@ class Ship():
 
 		self.dir += self.ang_vel
 		self.dir %= 2 * math.pi
-		for point in self.body_verts:
-			diff_x = point[0] - self.pos[0]
-			diff_y = point[1] - self.pos[1]
-			point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
-			point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
-		for point in self.r_wing_verts:
-			diff_x = point[0] - self.pos[0]
-			diff_y = point[1] - self.pos[1]
-			point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
-			point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
-		for point in self.l_wing_verts:
-			diff_x = point[0] - self.pos[0]
-			diff_y = point[1] - self.pos[1]
-			point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
-			point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
+		def rotate_points(vertices):
+			for point in vertices:
+				diff_x = point[0] - self.pos[0]
+				diff_y = point[1] - self.pos[1]
+				point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
+				point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
+
+		rotate_points(self.body_verts)
+		rotate_points(self.r_wing_verts)
+		rotate_points(self.l_wing_verts)
 	
 	def draw(self, surface):
 		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
