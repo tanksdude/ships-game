@@ -2,8 +2,8 @@ from ships import *
 import pygame
 import math
 
-WIDTH = 300
-HEIGHT = 300
+WIDTH = 800
+HEIGHT = 500
 DELAY = 50
 
 laser_list = [] # TODO: probably move to a class to manage it
