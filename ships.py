@@ -6,6 +6,8 @@ from laser import *
 class Ship():
 
 	health = 0
+	width = 15
+	height = 25
 	speed = 300 / DELAY
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
@@ -15,26 +17,37 @@ class Ship():
 	attack_mode_last_state = True
 	power_up = None
 
+
 	def __init__(self, health, position, direction):
 		self.hp = health
 		self.pos = position
 		self.dir = direction
 		self.body_verts = [
-			[self.pos[0],   self.pos[1]-20],
-			[self.pos[0]+7, self.pos[1]+5],
-			[self.pos[0]-7, self.pos[1]+5]
+			[self.pos[0],   self.pos[1] - 4/5 * Ship.height],
+			[self.pos[0] + Ship.width/2 , self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] - Ship.width/2, self.pos[1] + 1/5 * Ship.height]
 		]
-		self.r_gun_verts = []
-		self.l_gun_verts = []
 		self.r_wing_verts = [
-			[self.pos[0] + 5, self.pos[1]],
-			[self.pos[0] + 10, self.pos[1]],
-			[self.pos[0] + 3, self.pos[1] - 10]
+			[self.pos[0] + Ship.width / 4, self.pos[1]],
+			[self.pos[0] + 5/8 * Ship.width, self.pos[1]],
+			[self.pos[0] + Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
 		]
 		self.l_wing_verts = [
-			[self.pos[0] - 5, self.pos[1]],
-			[self.pos[0] - 10, self.pos[1]],
-			[self.pos[0] - 3, self.pos[1] - 10]
+			[self.pos[0] - Ship.width / 4, self.pos[1]],
+			[self.pos[0] - 5/8 * Ship.width, self.pos[1]],
+			[self.pos[0] - Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+		]
+		self.r_gun_verts = [
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1]],
+			[self.pos[0] + Ship.width/2, self.pos[1]],
+			[self.pos[0] + Ship.width/2, self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+		]
+		self.l_gun_verts = [
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1]],
+			[self.pos[0] - Ship.width/2, self.pos[1]],
+			[self.pos[0] - Ship.width/2, self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
 		]
 		self.vel = [0, 0]
 		self.ang_vel = 0
@@ -52,15 +65,16 @@ class Ship():
 
 		self.pos[0] += self.vel[0]
 		self.pos[1] += self.vel[1]
-		for point in self.body_verts:
-			point[0] += self.vel[0]
-			point[1] += self.vel[1]
-		for point in self.r_wing_verts:
-			point[0] += self.vel[0]
-			point[1] += self.vel[1]
-		for point in self.l_wing_verts:
-			point[0] += self.vel[0]
-			point[1] += self.vel[1]
+		def update_vert_pos(vertices):
+			for point in vertices:
+				point[0] += self.vel[0]
+				point[1] += self.vel[1]
+
+		update_vert_pos(self.body_verts)
+		update_vert_pos(self.r_wing_verts)
+		update_vert_pos(self.l_wing_verts)
+		update_vert_pos(self.r_gun_verts)
+		update_vert_pos(self.l_gun_verts)
 
 	def update_dir(self):
 		"""updates the direction and calculates new vertices using the rotation matrix"""
@@ -77,12 +91,16 @@ class Ship():
 		rotate_points(self.body_verts)
 		rotate_points(self.r_wing_verts)
 		rotate_points(self.l_wing_verts)
+		rotate_points(self.r_gun_verts)
+		rotate_points(self.l_gun_verts)
 	
 	def draw(self, surface):
 		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
 		if self.attack_mode:
 			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2]))
 			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
+			pygame.draw.polygon(surface, self.color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
+			pygame.draw.polygon(surface, self.color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
 
 class Player_Ship(Ship):
 
@@ -104,8 +122,6 @@ class Player_Ship(Ship):
 		if self.attack_mode_key_toggle_other:
 			self.attack_mode = new_attack_mode_state
 		
-		#print(self.attack_mode_last_state, self.attack_mode_key_toggle, self.attack_mode_key_toggle_other, new_attack_mode_state)
-
 		self.attack_mode_last_state = new_attack_mode_state
 
 	def vel_update(self):
@@ -138,8 +154,6 @@ class Player_Ship(Ship):
 			# translate relative velocity into true velocity
 			self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
 			self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
-
-			#print(vel[0], vel[1])
 
 		def speed_mode_vel_update():
 			"""changes the ship velocity in speed mode based on user input"""
