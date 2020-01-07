@@ -1,4 +1,3 @@
-from ships import *
 import pygame
 import math
 
