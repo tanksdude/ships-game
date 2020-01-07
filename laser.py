@@ -27,6 +27,8 @@ class Laser():
 
 class Laser_Manager():
 
+	laser_list = []
+
 	def update_lasers(surface):
 		for laser in laser_list: # TODO: move this code somewhere else, like to a class that manages lasers
 				laser.update_pos()

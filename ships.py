@@ -32,6 +32,7 @@ class Ship():
 		self.ang_vel = 0
 		self.lasers_fired = []
 		self.color = (255, 255, 255)
+		self.gun_color = (100, 100, 100)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
@@ -100,8 +101,8 @@ class Ship():
 	def draw(self, surface):
 		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
 		if self.attack_mode:
-			pygame.draw.polygon(surface, (128,128,128), (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
-			pygame.draw.polygon(surface, (128,128,128), (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
+			pygame.draw.polygon(surface, self.gun_color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
+			pygame.draw.polygon(surface, self.gun_color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
 			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2]))
 			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
 

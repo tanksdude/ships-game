@@ -11,7 +11,6 @@ def main():
 
 	def run_game():
 			"""contains actions of each frame"""
-			#add code
 			run = True
 			while run:
 				pygame.time.delay(DELAY)
@@ -21,7 +20,7 @@ def main():
 				Laser_Manager.update_lasers(field_display)
 				player.update_all(field_display)
 				pygame.display.update()
-				field_display.fill((0,0,0))
+				field_display.fill((20,20,20))
 
 			pygame.quit()	
 
