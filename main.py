@@ -5,7 +5,7 @@ import laser
 
 
 def main():
-	player = Player_Ship(3, [50, 50], math.pi/2)
+	player = Player_Ship(3, [WIDTH/2, HEIGHT/2], math.pi/2)
 	enemy = Enemy_Ship(3, [100, 100], math.pi/2)
 	field_display = pygame.display.set_mode((WIDTH, HEIGHT))
 
