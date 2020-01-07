@@ -25,3 +25,14 @@ class Laser():
 	def out_of_bounds(self):
 		return (self.pos[0] - self.radius < 0) or (self.pos[0] + self.radius > WIDTH) or (self.pos[1] - self.radius < 0) or (self.pos[1] + self.radius > HEIGHT)
 
+class Laser_Manager():
+
+	laser_list = []
+
+	def update_lasers(surface):
+		for laser in laser_list: # TODO: move this code somewhere else, like to a class that manages lasers
+				laser.update_pos()
+				if laser.out_of_bounds():
+					laser_list.remove(laser)
+					continue
+				laser.draw(surface)

@@ -2,14 +2,31 @@ from ships import *
 import pygame
 import math
 
-WIDTH = 300
-HEIGHT = 300
+WIDTH = 800
+HEIGHT = 500
 DELAY = 50
 
 laser_list = [] # TODO: probably move to a class to manage it
 
 def x_comp(vector_len, angle):
+	"""returns the x component of a vector given its magnitude and direction"""
+
 	return math.cos(angle) * vector_len
 
 def y_comp(vector_len, angle):
+	"""returns the y component of a vector given its magnitude and direction"""
+
 	return math.sin(angle) * vector_len
+
+def rotate_point(center, point, angle):
+	"""rotates a point around a center by a certain angle"""
+
+	diff_x = point[0] - center[0]
+	diff_y = point[1] - center[1]
+	point[0] = center[0] + diff_x * math.cos(angle) - diff_y * math.sin(angle)
+	point[1] = center[1] + diff_x * math.sin(angle) + diff_y * math.cos(angle)
+
+def rotate_vertices(vertices, center, angle):
+	"""rotates all vertices"""
+	for point in vertices:
+		rotate_point(center, point, angle)

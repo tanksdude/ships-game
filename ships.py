@@ -6,7 +6,9 @@ from laser import *
 class Ship():
 
 	health = 0
-	speed = 200 / DELAY
+	width = 15
+	height = 25
+	speed = 300 / DELAY
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True
@@ -15,57 +17,103 @@ class Ship():
 	attack_mode_last_state = True
 	power_up = None
 
+
 	def __init__(self, health, position, direction):
 		self.hp = health
 		self.pos = position
 		self.dir = direction
-		self.verts = [
-			[self.pos[0],   self.pos[1]-10],
-			[self.pos[0]+5, self.pos[1]+5],
-			[self.pos[0]-5, self.pos[1]+5]
+		self.body_verts = [
+			[self.pos[0],   self.pos[1] - 4/5 * Ship.height],
+			[self.pos[0] + Ship.width/2 , self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] - Ship.width/2, self.pos[1] + 1/5 * Ship.height]
 		]
+		self.init_attack_gear()
 		self.vel = [0, 0]
 		self.ang_vel = 0
 		self.lasers_fired = []
 		self.color = (255, 255, 255)
+		self.gun_color = (100, 100, 100)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
 
 	def set_y_vel(self, new_y_vel):
-		self.vel[1] = new_y_vel
+		self.vel[1] = new_y_vel	
+
+	def init_attack_gear(self):
+		self.r_wing_verts = [
+			[self.pos[0] + Ship.width / 4, self.pos[1]],
+			[self.pos[0] + 5/8 * Ship.width, self.pos[1]],
+			[self.pos[0] + Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+		]
+		rotate_vertices(self.r_wing_verts, self.pos, self.dir - math.pi/2)
+		self.l_wing_verts = [
+			[self.pos[0] - Ship.width / 4, self.pos[1]],
+			[self.pos[0] - 5/8 * Ship.width, self.pos[1]],
+			[self.pos[0] - Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+		]
+		rotate_vertices(self.l_wing_verts, self.pos, self.dir - math.pi/2)
+		self.r_gun_verts = [
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1]],
+			[self.pos[0] + Ship.width/2, self.pos[1]],
+			[self.pos[0] + Ship.width/2, self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+		]
+		rotate_vertices(self.r_gun_verts, self.pos, self.dir - math.pi/2)
+		self.l_gun_verts = [
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1]],
+			[self.pos[0] - Ship.width/2, self.pos[1]],
+			[self.pos[0] - Ship.width/2, self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+		]
+		rotate_vertices(self.l_gun_verts, self.pos, self.dir - math.pi/2)
 
 	def update_pos(self):
 		"""updates the position of the ship based on its velocity"""
 
 		self.pos[0] += self.vel[0]
 		self.pos[1] += self.vel[1]
-		for point in self.verts:
-			point[0] += self.vel[0]
-			point[1] += self.vel[1]
+		def update_vert_pos(vertices):
+			for point in vertices:
+				point[0] += self.vel[0]
+				point[1] += self.vel[1]
+
+		update_vert_pos(self.body_verts)
+		if self.attack_mode:
+			update_vert_pos(self.r_wing_verts)
+			update_vert_pos(self.l_wing_verts)
+			update_vert_pos(self.r_gun_verts)
+			update_vert_pos(self.l_gun_verts)
 
 	def update_dir(self):
 		"""updates the direction and calculates new vertices using the rotation matrix"""
 
 		self.dir += self.ang_vel
 		self.dir %= 2 * math.pi
-		for point in self.verts:
-			diff_x = point[0] - self.pos[0]
-			diff_y = point[1] - self.pos[1]
-			point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
-			point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
+
+		rotate_vertices(self.body_verts, self.pos, self.ang_vel)
+		if self.attack_mode:
+			rotate_vertices(self.r_wing_verts, self.pos, self.ang_vel)
+			rotate_vertices(self.l_wing_verts, self.pos, self.ang_vel)
+			rotate_vertices(self.r_gun_verts, self.pos, self.ang_vel)
+			rotate_vertices(self.l_gun_verts, self.pos, self.ang_vel)
 	
 	def draw(self, surface):
-		pygame.draw.polygon(surface, self.color, (self.verts[0], self.verts[1], self.verts[2]))
+		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
+		if self.attack_mode:
+			pygame.draw.polygon(surface, self.gun_color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
+			pygame.draw.polygon(surface, self.gun_color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
+			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2]))
+			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
 
 class Player_Ship(Ship):
 
 	def __init__(self, health, position, direction):
 		super().__init__(health, position, direction)
-		self.color = (255, 0, 0)
+		self.color = (0, 0, 255)
 
 	def mode_update(self):
-		"""changes the ship's mode based on if "e" is pressed"""
+		"""changes the ship's mode if 'e' is pressed"""
 
 		keys = pygame.key.get_pressed()
 		new_attack_mode_state = not keys[pygame.K_e]
@@ -74,12 +122,11 @@ class Player_Ship(Ship):
 			self.attack_mode_key_toggle = not self.attack_mode_key_toggle
 			if self.attack_mode_key_toggle:
 				self.attack_mode_key_toggle_other = not self.attack_mode_key_toggle_other
+				self.init_attack_gear()
 		
 		if self.attack_mode_key_toggle_other:
 			self.attack_mode = new_attack_mode_state
 		
-		#print(self.attack_mode_last_state, self.attack_mode_key_toggle, self.attack_mode_key_toggle_other, new_attack_mode_state)
-
 		self.attack_mode_last_state = new_attack_mode_state
 
 	def vel_update(self):
@@ -113,8 +160,6 @@ class Player_Ship(Ship):
 			self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
 			self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
 
-			#print(vel[0], vel[1])
-
 		def speed_mode_vel_update():
 			"""changes the ship velocity in speed mode based on user input"""
 			
@@ -144,8 +189,9 @@ class Player_Ship(Ship):
 		"""fires by initializing a laser object and storing it in the ship's fired lasers"""
 
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_SPACE]:
-			laser_list.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
+		if keys[pygame.K_SPACE] and self.attack_mode:
+			laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, (255, 0, 0)))
+			laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, (255, 0, 0)))
 
 	def update_all(self, field_display):
 		self.vel_update()
