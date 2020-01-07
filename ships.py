@@ -130,50 +130,53 @@ class Player_Ship(Ship):
 		
 		self.attack_mode_last_state = new_attack_mode_state
 
+	def speed_mode_vel_update(self):
+		"""changes the ship velocity in speed mode based on user input"""
+		
+		keys = pygame.key.get_pressed()
+
+		vel = [0, 0]
+		if keys[pygame.K_w]:
+			vel[1] += 2 * Ship.speed
+		self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
+		self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
+
+	def attack_mode_vel_update(self):
+		"""changes the ship velocity in attack mode based on user input"""
+
+		keys = pygame.key.get_pressed()
+
+		vel = [0, 0] # x and y components relative to actual ship
+
+		if keys[pygame.K_d]:
+			vel[0] += Ship.speed
+		if keys[pygame.K_a]:
+			vel[0] -= Ship.speed
+		if keys[pygame.K_w]:
+			vel[1] += Ship.speed
+		if keys[pygame.K_s]:
+			vel[1] -= Ship.speed
+		
+		# normalize velocity
+		magnitude = math.hypot(vel[0], vel[1]) # hypot is same as sqrt(x**2 + y**2)
+		if magnitude > Ship.speed:
+			magnitude /= Ship.speed # make the magnitude relative to Ship.speed
+			vel[0] /= magnitude
+			vel[1] /= magnitude
+		
+		# translate relative velocity into true velocity
+		self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
+		self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
+
 	def vel_update(self):
 		"""determines how to update the ship's velocity based on its mode"""
 
-		keys = pygame.key.get_pressed()
 		self.mode_update()
 
-		def attack_mode_vel_update():
-			"""changes the ship velocity in attack mode based on user input"""
-
-			vel = [0, 0] # x and y components relative to actual ship
-
-			if keys[pygame.K_d]:
-				vel[0] += Ship.speed
-			if keys[pygame.K_a]:
-				vel[0] -= Ship.speed
-			if keys[pygame.K_w]:
-				vel[1] += Ship.speed
-			if keys[pygame.K_s]:
-				vel[1] -= Ship.speed
-			
-			# normalize velocity
-			magnitude = math.hypot(vel[0], vel[1]) # hypot is same as sqrt(x**2 + y**2)
-			if magnitude > Ship.speed:
-				magnitude /= Ship.speed # make the magnitude relative to Ship.speed
-				vel[0] /= magnitude
-				vel[1] /= magnitude
-			
-			# translate relative velocity into true velocity
-			self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
-			self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
-
-		def speed_mode_vel_update():
-			"""changes the ship velocity in speed mode based on user input"""
-			
-			vel = [0, 0]
-			if keys[pygame.K_w]:
-				vel[1] += 2 * Ship.speed
-			self.set_x_vel(x_comp(vel[0], self.dir - math.pi/2) + x_comp(-vel[1], self.dir))
-			self.set_y_vel(y_comp(vel[0], self.dir - math.pi/2) + y_comp(-vel[1], self.dir))
-
 		if self.attack_mode:
-			attack_mode_vel_update()
+			self.attack_mode_vel_update()
 		else:
-			speed_mode_vel_update()
+			self.speed_mode_vel_update()
 
 	def ang_vel_update(self):
 		"""changes the ship angular velocity based on user input"""
