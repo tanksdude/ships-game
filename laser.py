@@ -14,9 +14,8 @@ class Laser():
 		self.color = color_
 
 	def draw(self, surface):
-		self.pos[0] = int(self.pos[0])
-		self.pos[1] = int(self.pos[1])
-		pygame.draw.circle(surface, self.color, self.pos, Laser.radius)
+		updated_pos = [int(self.pos[0]), int(self.pos[1])]
+		pygame.draw.circle(surface, self.color, updated_pos, Laser.radius)
 
 	def update_pos(self):
 		self.pos[0] += self.vel[0]
