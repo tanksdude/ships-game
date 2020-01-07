@@ -21,9 +21,8 @@ class Laser():
 		return (self.pos[0] - self.radius < 0) or (self.pos[0] + self.radius > WIDTH) or (self.pos[1] - self.radius < 0) or (self.pos[1] + self.radius > HEIGHT)
 
 	def draw(self, surface):
-		self.pos[0] = int(self.pos[0])
-		self.pos[1] = int(self.pos[1])
-		pygame.draw.circle(surface, self.color, self.pos, Laser.radius)
+		updated_pos = [int(self.pos[0]), int(self.pos[1])]
+		pygame.draw.circle(surface, self.color, updated_pos, Laser.radius)
 
 class Laser_Manager():
 
