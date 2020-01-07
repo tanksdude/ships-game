@@ -13,16 +13,16 @@ class Laser():
 		self.vel = [- x_comp(Laser.speed, self.dir), - y_comp(Laser.speed, self.dir)]
 		self.color = color_
 
-	def draw(self, surface):
-		updated_pos = [int(self.pos[0]), int(self.pos[1])]
-		pygame.draw.circle(surface, self.color, updated_pos, Laser.radius)
-
 	def update_pos(self):
 		self.pos[0] += self.vel[0]
 		self.pos[1] += self.vel[1]
 
 	def out_of_bounds(self):
 		return (self.pos[0] - self.radius < 0) or (self.pos[0] + self.radius > WIDTH) or (self.pos[1] - self.radius < 0) or (self.pos[1] + self.radius > HEIGHT)
+
+	def draw(self, surface):
+		updated_pos = [int(self.pos[0]), int(self.pos[1])]
+		pygame.draw.circle(surface, self.color, updated_pos, Laser.radius)
 
 class Laser_Manager():
 
