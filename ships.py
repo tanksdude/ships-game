@@ -27,28 +27,7 @@ class Ship():
 			[self.pos[0] + Ship.width/2 , self.pos[1] + 1/5 * Ship.height],
 			[self.pos[0] - Ship.width/2, self.pos[1] + 1/5 * Ship.height]
 		]
-		self.r_wing_verts = [
-			[self.pos[0] + Ship.width / 4, self.pos[1]],
-			[self.pos[0] + 5/8 * Ship.width, self.pos[1]],
-			[self.pos[0] + Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
-		]
-		self.l_wing_verts = [
-			[self.pos[0] - Ship.width / 4, self.pos[1]],
-			[self.pos[0] - 5/8 * Ship.width, self.pos[1]],
-			[self.pos[0] - Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
-		]
-		self.r_gun_verts = [
-			[self.pos[0] + 3/8 * Ship.width, self.pos[1]],
-			[self.pos[0] + Ship.width/2, self.pos[1]],
-			[self.pos[0] + Ship.width/2, self.pos[1] - 3/5 * Ship.height],
-			[self.pos[0] + 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
-		]
-		self.l_gun_verts = [
-			[self.pos[0] - 3/8 * Ship.width, self.pos[1]],
-			[self.pos[0] - Ship.width/2, self.pos[1]],
-			[self.pos[0] - Ship.width/2, self.pos[1] - 3/5 * Ship.height],
-			[self.pos[0] - 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
-		]
+		self.init_attack_gear()
 		self.vel = [0, 0]
 		self.ang_vel = 0
 		self.lasers_fired = []
@@ -121,16 +100,16 @@ class Ship():
 	def draw(self, surface):
 		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
 		if self.attack_mode:
+			pygame.draw.polygon(surface, (128,128,128), (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
+			pygame.draw.polygon(surface, (128,128,128), (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
 			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2]))
 			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
-			pygame.draw.polygon(surface, self.color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
-			pygame.draw.polygon(surface, self.color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
 
 class Player_Ship(Ship):
 
 	def __init__(self, health, position, direction):
 		super().__init__(health, position, direction)
-		self.color = (255, 0, 0)
+		self.color = (0, 0, 255)
 
 	def mode_update(self):
 		"""changes the ship's mode if 'e' is pressed"""
@@ -209,9 +188,9 @@ class Player_Ship(Ship):
 		"""fires by initializing a laser object and storing it in the ship's fired lasers"""
 
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_SPACE]:
-			laser_list.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
-			laser_list.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
+		if keys[pygame.K_SPACE] and self.attack_mode:
+			laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, (255, 0, 0)))
+			laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, (255, 0, 0)))
 
 	def update_all(self, field_display):
 		self.vel_update()
