@@ -60,6 +60,34 @@ class Ship():
 	def set_y_vel(self, new_y_vel):
 		self.vel[1] = new_y_vel	
 
+	def init_attack_gear(self):
+		self.r_wing_verts = [
+			[self.pos[0] + Ship.width / 4, self.pos[1]],
+			[self.pos[0] + 5/8 * Ship.width, self.pos[1]],
+			[self.pos[0] + Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+		]
+		rotate_vertices(self.r_wing_verts, self.pos, self.dir - math.pi/2)
+		self.l_wing_verts = [
+			[self.pos[0] - Ship.width / 4, self.pos[1]],
+			[self.pos[0] - 5/8 * Ship.width, self.pos[1]],
+			[self.pos[0] - Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+		]
+		rotate_vertices(self.l_wing_verts, self.pos, self.dir - math.pi/2)
+		self.r_gun_verts = [
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1]],
+			[self.pos[0] + Ship.width/2, self.pos[1]],
+			[self.pos[0] + Ship.width/2, self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+		]
+		rotate_vertices(self.r_gun_verts, self.pos, self.dir - math.pi/2)
+		self.l_gun_verts = [
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1]],
+			[self.pos[0] - Ship.width/2, self.pos[1]],
+			[self.pos[0] - Ship.width/2, self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+		]
+		rotate_vertices(self.l_gun_verts, self.pos, self.dir - math.pi/2)
+
 	def update_pos(self):
 		"""updates the position of the ship based on its velocity"""
 
@@ -71,28 +99,24 @@ class Ship():
 				point[1] += self.vel[1]
 
 		update_vert_pos(self.body_verts)
-		update_vert_pos(self.r_wing_verts)
-		update_vert_pos(self.l_wing_verts)
-		update_vert_pos(self.r_gun_verts)
-		update_vert_pos(self.l_gun_verts)
+		if self.attack_mode:
+			update_vert_pos(self.r_wing_verts)
+			update_vert_pos(self.l_wing_verts)
+			update_vert_pos(self.r_gun_verts)
+			update_vert_pos(self.l_gun_verts)
 
 	def update_dir(self):
 		"""updates the direction and calculates new vertices using the rotation matrix"""
 
 		self.dir += self.ang_vel
 		self.dir %= 2 * math.pi
-		def rotate_points(vertices):
-			for point in vertices:
-				diff_x = point[0] - self.pos[0]
-				diff_y = point[1] - self.pos[1]
-				point[0] = self.pos[0] + diff_x * math.cos(self.ang_vel) - diff_y * math.sin(self.ang_vel)
-				point[1] = self.pos[1] + diff_x * math.sin(self.ang_vel) + diff_y * math.cos(self.ang_vel)
 
-		rotate_points(self.body_verts)
-		rotate_points(self.r_wing_verts)
-		rotate_points(self.l_wing_verts)
-		rotate_points(self.r_gun_verts)
-		rotate_points(self.l_gun_verts)
+		rotate_vertices(self.body_verts, self.pos, self.ang_vel)
+		if self.attack_mode:
+			rotate_vertices(self.r_wing_verts, self.pos, self.ang_vel)
+			rotate_vertices(self.l_wing_verts, self.pos, self.ang_vel)
+			rotate_vertices(self.r_gun_verts, self.pos, self.ang_vel)
+			rotate_vertices(self.l_gun_verts, self.pos, self.ang_vel)
 	
 	def draw(self, surface):
 		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
@@ -109,7 +133,7 @@ class Player_Ship(Ship):
 		self.color = (255, 0, 0)
 
 	def mode_update(self):
-		"""changes the ship's mode based on if "e" is pressed"""
+		"""changes the ship's mode if 'e' is pressed"""
 
 		keys = pygame.key.get_pressed()
 		new_attack_mode_state = not keys[pygame.K_e]
@@ -118,6 +142,7 @@ class Player_Ship(Ship):
 			self.attack_mode_key_toggle = not self.attack_mode_key_toggle
 			if self.attack_mode_key_toggle:
 				self.attack_mode_key_toggle_other = not self.attack_mode_key_toggle_other
+				self.init_attack_gear()
 		
 		if self.attack_mode_key_toggle_other:
 			self.attack_mode = new_attack_mode_state
@@ -185,6 +210,7 @@ class Player_Ship(Ship):
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_SPACE]:
+			laser_list.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
 			laser_list.append(Laser(self.pos[:], self.dir, (255, 0, 0)))
 
 	def update_all(self, field_display):
