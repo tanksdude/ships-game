@@ -190,8 +190,8 @@ class Player_Ship(Ship):
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_SPACE] and self.attack_mode:
-			laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, (255, 0, 0)))
-			laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, (255, 0, 0)))
+			Laser_Manager.laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, (255, 0, 0)))
+			Laser_Manager.laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, (255, 0, 0)))
 
 	def update_all(self, field_display):
 		self.vel_update()
