@@ -33,6 +33,7 @@ class Ship():
 		self.lasers_fired = []
 		self.color = (255, 255, 255)
 		self.gun_color = (100, 100, 100)
+		self.laser_color = (255, 0, 0)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
@@ -99,11 +100,11 @@ class Ship():
 			rotate_vertices(self.l_gun_verts, self.pos, self.ang_vel)
 	
 	def draw(self, surface):
-		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2]))
+		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2])) # main body
 		if self.attack_mode:
-			pygame.draw.polygon(surface, self.gun_color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3]))
+			pygame.draw.polygon(surface, self.gun_color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3])) # gun
 			pygame.draw.polygon(surface, self.gun_color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
-			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2]))
+			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2])) # wing
 			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
 
 class Player_Ship(Ship):
@@ -150,7 +151,7 @@ class Player_Ship(Ship):
 				vel[1] -= Ship.speed
 			
 			# normalize velocity
-			magnitude = (vel[0]**2 + vel[1]**2) ** .5
+			magnitude = math.hypot(vel[0], vel[1]) # hypot is same as sqrt(x**2 + y**2)
 			if magnitude > Ship.speed:
 				magnitude /= Ship.speed # make the magnitude relative to Ship.speed
 				vel[0] /= magnitude
@@ -190,8 +191,8 @@ class Player_Ship(Ship):
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_SPACE] and self.attack_mode:
-			Laser_Manager.laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, (255, 0, 0)))
-			Laser_Manager.laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, (255, 0, 0)))
+			Laser_Manager.laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, self.laser_color))
+			Laser_Manager.laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, self.laser_color))
 
 	def update_all(self, field_display):
 		self.vel_update()
