@@ -13,7 +13,7 @@ def main():
 	def run_game():
 			"""contains actions of each frame"""
 			run = True
-			Obstacle_Manager.init_constant_obstacles()
+			Obstacle_Manager.init_obstacles()
 			while run: 
 				pygame.time.delay(DELAY)
 				for event in pygame.event.get():

@@ -1,5 +1,6 @@
 import pygame
 from utils import *
+import random as rnd
 
 class Obstacle():
 
@@ -25,9 +26,18 @@ class Obstacle_Manager():
 	def init_obstacles():
 		"""instantiates obstacles at the beginning of the game"""
 
-		return None
+		Obstacle_Manager.init_constant_obstacles()
+		for x_region in range(200, FIELD_WIDTH - 100, 100):
+			for y_region in range(50, FIELD_HEIGHT, 100):
+				x_pos = rnd.randint(x_region - 50, x_region + 50)
+				y_pos = rnd.randint(y_region - 50, y_region + 50)
+				width = rnd.randint(10, 50)
+				height = rnd.randint(10, 50)
+				Obstacle_Manager.obstacle_list.append(Obstacle(rnd.randint(10, 50), rnd.randint(10, 50),(x_pos,y_pos)))
 
 	def init_constant_obstacles():
+		"""instantiates contant obstacles on each side of the field"""
+
 		for x_pos in [100, FIELD_WIDTH - 100]:
 			for y_pos in [50, FIELD_HEIGHT - 50]:
 				Obstacle_Manager.obstacle_list.append(Obstacle(250, 25, (x_pos, y_pos)))
