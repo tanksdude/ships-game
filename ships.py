@@ -2,6 +2,7 @@ import pygame
 from utils import *
 import math
 from laser import *
+import collision as coll
 
 class Ship():
 
@@ -42,6 +43,8 @@ class Ship():
 		self.vel[1] = new_y_vel	
 
 	def init_attack_gear(self):
+		"""initiates attack gear when attack mode becomes active"""
+
 		self.r_wing_verts = [
 			[self.pos[0] + Ship.width / 4, self.pos[1]],
 			[self.pos[0] + 5/8 * Ship.width, self.pos[1]],
@@ -100,12 +103,14 @@ class Ship():
 			rotate_vertices(self.l_gun_verts, self.pos, self.ang_vel)
 	
 	def draw(self, surface):
-		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2])) # main body
+		"""draws all parts of the ship"""
+
+		pygame.draw.polygon(surface, self.color, self.body_verts) # main body
 		if self.attack_mode:
-			pygame.draw.polygon(surface, self.gun_color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3])) # gun
-			pygame.draw.polygon(surface, self.gun_color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
-			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2])) # wing
-			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
+			pygame.draw.polygon(surface, self.gun_color, self.r_gun_verts) # guns
+			pygame.draw.polygon(surface, self.gun_color, self.l_gun_verts)
+			pygame.draw.polygon(surface, self.color, self.r_wing_verts) # wings
+			pygame.draw.polygon(surface, self.color, self.l_wing_verts)
 
 class Player_Ship(Ship):
 
@@ -194,8 +199,16 @@ class Player_Ship(Ship):
 
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_SPACE] and self.attack_mode:
-			Laser_Manager.laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, self.laser_color))
-			Laser_Manager.laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, self.laser_color))
+			#right gun laser instantiation
+			r_laser = Laser(self.r_gun_verts[3][:], self.dir, self.laser_color)
+			Laser_Manager.laser_list.append(r_laser)
+			collision_r_laser = coll.Circle(coll.Vector(r_laser.pos[0], r_laser.pos[1]), Laser.radius)
+			Laser_Manager.collision_laser_list.append(collision_r_laser)
+			#left gun laser instantiation
+			l_laser = Laser(self.l_gun_verts[3][:], self.dir, self.laser_color)
+			Laser_Manager.laser_list.append(l_laser)
+			collision_l_laser = coll.Circle(coll.Vector(l_laser.pos[0], l_laser.pos[1]), Laser.radius)
+			Laser_Manager.collision_laser_list.append(collision_l_laser)
 
 	def update_all(self, field_display):
 		self.vel_update()

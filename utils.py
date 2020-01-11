@@ -1,4 +1,3 @@
-import pygame
 import math
 
 FIELD_WIDTH = 800

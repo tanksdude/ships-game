@@ -1,5 +1,6 @@
 import pygame
 from utils import *
+import collision as coll
 
 class Laser():
 
@@ -24,14 +25,26 @@ class Laser():
 		updated_pos = [int(self.pos[0]), int(self.pos[1])]
 		pygame.draw.circle(surface, self.color, updated_pos, Laser.radius)
 
+
 class Laser_Manager():
 
 	laser_list = []
+	collision_laser_list = []
 
 	def update_lasers(surface):
-		for laser in Laser_Manager.laser_list:
+		for (laser, coll_laser) in zip(Laser_Manager.laser_list, Laser_Manager.collision_laser_list):
 				laser.update_pos()
+				coll_laser.pos = coll.Vector(laser.pos[0], laser.pos[1])
 				if laser.out_of_bounds():
 					Laser_Manager.laser_list.remove(laser)
+					Laser_Manager.collision_laser_list.remove(coll_laser)
 					continue
 				laser.draw(surface)
+
+	#def remove_laser(laser, coll_laser):
+
+
+
+
+
+

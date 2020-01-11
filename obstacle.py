@@ -1,6 +1,7 @@
 import pygame
 from utils import *
 import random as rnd
+import collision as coll
 
 class Obstacle():
 
@@ -17,14 +18,15 @@ class Obstacle():
 		]
 
 	def draw(self, surface):
-		pygame.draw.polygon(surface, self.color, (self.verts[0], self.verts[1], self.verts[2], self.verts[3]))
+		pygame.draw.polygon(surface, self.color, self.verts)
 
 class Obstacle_Manager():
 
 	obstacle_list = []
+	collision_obstacle_list = []
 
 	def init_obstacles():
-		"""instantiates obstacles at the beginning of the game"""
+		"""instantiates all obstacles at the beginning of the game"""
 
 		Obstacle_Manager.init_constant_obstacles()
 		for x_region in range(200, FIELD_WIDTH - 100, 100):
@@ -33,15 +35,25 @@ class Obstacle_Manager():
 				y_pos = rnd.randint(y_region - 50, y_region + 50)
 				width = rnd.randint(10, 50)
 				height = rnd.randint(10, 50)
-				Obstacle_Manager.obstacle_list.append(Obstacle(rnd.randint(10, 50), rnd.randint(10, 50),(x_pos,y_pos)))
+				obst = Obstacle(height, width,(x_pos,y_pos))
+				Obstacle_Manager.obstacle_list.append(obst)
+				collision_obst = coll.Concave_Poly(coll.Vector(x_pos, y_pos), [coll.Vector(vert[0]-x_pos, vert[1]-y_pos) for vert in obst.verts])
+				Obstacle_Manager.collision_obstacle_list.append(collision_obst)
 
 	def init_constant_obstacles():
 		"""instantiates contant obstacles on each side of the field"""
 
 		for x_pos in [100, FIELD_WIDTH - 100]:
 			for y_pos in [50, FIELD_HEIGHT - 50]:
-				Obstacle_Manager.obstacle_list.append(Obstacle(250, 25, (x_pos, y_pos)))
+				obst = Obstacle(250, 25,(x_pos,y_pos))
+				Obstacle_Manager.obstacle_list.append(obst)
+				collision_obst = coll.Concave_Poly(coll.Vector(x_pos, y_pos), [coll.Vector(vert[0]-x_pos, vert[1]-y_pos) for vert in obst.verts])
+				Obstacle_Manager.collision_obstacle_list.append(collision_obst)
 
 	def update_obstacles(surface):
+		"""updates and draws all obstacles in the field"""
+
 		for obstacle in Obstacle_Manager.obstacle_list:
 			obstacle.draw(surface)
+
+
