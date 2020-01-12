@@ -17,6 +17,7 @@ def main():
 				if coll.collide(coll_laser, coll_obstacle):
 					Laser_Manager.laser_list.remove(laser)
 					Laser_Manager.collision_laser_list.remove(coll_laser)
+					break
 
 
 
