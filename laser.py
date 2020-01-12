@@ -5,7 +5,7 @@ import collision as coll
 class Laser():
 
 	power = 3
-	speed = 600 / DELAY
+	speed = 6/25 * DELAY
 	radius = 2
 
 	def __init__(self, position, direction, color):
@@ -36,12 +36,14 @@ class Laser_Manager():
 				laser.update_pos()
 				coll_laser.pos = coll.Vector(laser.pos[0], laser.pos[1])
 				if laser.out_of_bounds():
-					Laser_Manager.laser_list.remove(laser)
-					Laser_Manager.collision_laser_list.remove(coll_laser)
+					Laser_Manager.remove_laser(laser, coll_laser)
 					continue
 				laser.draw(surface)
 
-	#def remove_laser(laser, coll_laser):
+	def remove_laser(laser, coll_laser):
+		if laser in Laser_Manager.laser_list:
+			Laser_Manager.laser_list.remove(laser)
+			Laser_Manager.collision_laser_list.remove(coll_laser)
 
 
 

@@ -29,9 +29,9 @@ def main():
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						run = False
+				player.update_all(field_display)
 				Laser_Manager.update_lasers(field_display)
 				Obstacle_Manager.update_obstacles(field_display)
-				player.update_all(field_display)
 				laser_obstacle_collision()
 				pygame.display.update()
 				field_display.fill((20,20,20))

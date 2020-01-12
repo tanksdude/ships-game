@@ -9,7 +9,7 @@ class Ship():
 	health = 0
 	width = 15
 	height = 25
-	speed = 300 / DELAY
+	speed = 6/50 * DELAY
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True

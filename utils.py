@@ -2,7 +2,7 @@ import math
 
 FIELD_WIDTH = 800
 FIELD_HEIGHT = 500
-DELAY = 50
+DELAY = 20
 
 def x_comp(vector_len, angle):
 	"""returns the x component of a vector given its magnitude and direction"""
