@@ -10,6 +10,7 @@ class Ship():
 	width = 15
 	height = 25
 	speed = 6/50 * DELAY
+	angular_speed = math.pi / 10
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True
@@ -188,9 +189,9 @@ class Player_Ship(Ship):
  
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_LEFT]:
-			self.ang_vel = - math.pi / 10
+			self.ang_vel = - Ship.angular_speed
 		elif keys[pygame.K_RIGHT]:
-			self.ang_vel = math.pi / 10
+			self.ang_vel = Ship.angular_speed
 		else:
 			self.ang_vel = 0
 
@@ -210,12 +211,11 @@ class Player_Ship(Ship):
 			collision_l_laser = coll.Circle(coll.Vector(l_laser.pos[0], l_laser.pos[1]), Laser.radius)
 			Laser_Manager.collision_laser_list.append(collision_l_laser)
 
-	def update_all(self, field_display):
+	def update_all(self): # (it's the tick function)
 		self.vel_update()
 		self.ang_vel_update()
 		self.update_pos()
 		self.update_dir()
-		self.draw(field_display)
 		self.fire_laser()
 
 class Enemy_Ship(Ship):

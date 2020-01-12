@@ -50,10 +50,13 @@ class Obstacle_Manager():
 				collision_obst = coll.Concave_Poly(coll.Vector(x_pos, y_pos), [coll.Vector(vert[0]-x_pos, vert[1]-y_pos) for vert in obst.verts])
 				Obstacle_Manager.collision_obstacle_list.append(collision_obst)
 
-	def update_obstacles(surface):
-		"""updates and draws all obstacles in the field"""
+	def update_obstacles():
+		"""updates all obstacles in the field"""
+		pass
+		
+	def draw_all_obstacles(surface):
+		"""draws all obstacles in the field"""
 
 		for obstacle in Obstacle_Manager.obstacle_list:
 			obstacle.draw(surface)
-
 
