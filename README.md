@@ -7,7 +7,7 @@ The battlefield is randomized and there are power-ups to collect in order to def
 ## Getting Started
 
 * Download Python
-* Install pygame (instructions below)
+* Install pygame and collision (instructions below)
 * Setup your favorite developing environment for Python
 * Run it in your favorite developing environment
 
@@ -18,7 +18,9 @@ The battlefield is randomized and there are power-ups to collect in order to def
 2. `cd <wherever python is installed on your system>`
 3. `cd Scripts`
 4. `pip install pygame`
+5. `pip install collision`
 
 ### Mac set-up
 1. Open terminal
 2. `sudo pip install pygame`
+3. `sudo pip install collision`
