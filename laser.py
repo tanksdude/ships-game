@@ -31,21 +31,22 @@ class Laser_Manager():
 	laser_list = []
 	collision_laser_list = []
 
-	def update_lasers(surface):
+	def update_lasers():
 		for (laser, coll_laser) in zip(Laser_Manager.laser_list, Laser_Manager.collision_laser_list):
-				laser.update_pos()
-				coll_laser.pos = coll.Vector(laser.pos[0], laser.pos[1])
-				if laser.out_of_bounds():
-					Laser_Manager.remove_laser(laser, coll_laser)
-					continue
-				laser.draw(surface)
+			laser.update_pos()
+			coll_laser.pos = coll.Vector(laser.pos[0], laser.pos[1])
+			if laser.out_of_bounds():
+				Laser_Manager.remove_laser(laser, coll_laser)
+				continue
 
 	def remove_laser(laser, coll_laser):
 		if laser in Laser_Manager.laser_list:
 			Laser_Manager.laser_list.remove(laser)
 			Laser_Manager.collision_laser_list.remove(coll_laser)
 
-
+	def draw_all_lasers(surface):
+		for laser in Laser_Manager.laser_list:
+			laser.draw(surface)
 
 
 

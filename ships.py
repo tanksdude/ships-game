@@ -211,12 +211,11 @@ class Player_Ship(Ship):
 			collision_l_laser = coll.Circle(coll.Vector(l_laser.pos[0], l_laser.pos[1]), Laser.radius)
 			Laser_Manager.collision_laser_list.append(collision_l_laser)
 
-	def update_all(self, field_display):
+	def update_all(self): # (it's the tick function)
 		self.vel_update()
 		self.ang_vel_update()
 		self.update_pos()
 		self.update_dir()
-		self.draw(field_display)
 		self.fire_laser()
 
 class Enemy_Ship(Ship):

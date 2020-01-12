@@ -11,7 +11,7 @@ def main():
 	enemy = Enemy_Ship(3, [100, 100], math.pi/2)
 	field_display = pygame.display.set_mode((FIELD_WIDTH, FIELD_HEIGHT))
 
-	def laser_obstacle_collision():
+	def laser_obstacle_collision(): #TODO: move?
 		for (laser, coll_laser) in zip(Laser_Manager.laser_list, Laser_Manager.collision_laser_list):
 			for coll_obstacle in Obstacle_Manager.collision_obstacle_list:
 				if coll.collide(coll_laser, coll_obstacle):
@@ -30,10 +30,14 @@ def main():
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						run = False
-				player.update_all(field_display)
-				Laser_Manager.update_lasers(field_display)
-				Obstacle_Manager.update_obstacles(field_display)
+				player.update_all()
+				Laser_Manager.update_lasers()
+				Obstacle_Manager.update_obstacles()
 				laser_obstacle_collision()
+
+				Laser_Manager.draw_all_lasers(field_display)
+				Obstacle_Manager.draw_all_obstacles(field_display)
+				player.draw(field_display)
 				pygame.display.update()
 				field_display.fill((20,20,20))
 
