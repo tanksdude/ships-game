@@ -19,7 +19,9 @@ def main():
 					Laser_Manager.collision_laser_list.remove(coll_laser)
 					break
 
-
+	def player_obstacle_collision():
+		for coll_obstacle in Obstacle_Manager.collision_obstacle_list:
+			return None
 
 	def run_game():
 			"""contains actions of each frame"""

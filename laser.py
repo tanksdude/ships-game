@@ -5,7 +5,7 @@ import collision as coll
 class Laser():
 
 	power = 3
-	speed = 6/25 * DELAY
+	speed = 10/25 * DELAY
 	radius = 2
 
 	def __init__(self, position, direction, color):
