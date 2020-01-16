@@ -2,13 +2,15 @@ import pygame
 from utils import *
 import math
 from laser import *
+import collision as coll
 
 class Ship():
 
 	health = 0
 	width = 15
 	height = 25
-	speed = 300 / DELAY
+	speed = 8/50 * DELAY
+	angular_speed = math.pi / 10 * DELAY * 2 / 50
 	diagonal_speed = speed / (2 ** (1/2)) 
 	damage = 1
 	attack_mode = True
@@ -16,6 +18,7 @@ class Ship():
 	attack_mode_key_toggle_other = True # updates when ↑ changes, so the end effect is this changes when the key goes down
 	attack_mode_last_state = True
 	power_up = None
+	fire_cooldown = 5 * DELAY / 20 # 
 
 
 	def __init__(self, health, position, direction):
@@ -23,9 +26,9 @@ class Ship():
 		self.pos = position
 		self.dir = direction
 		self.body_verts = [
-			[self.pos[0],   self.pos[1] - 4/5 * Ship.height],
-			[self.pos[0] + Ship.width/2 , self.pos[1] + 1/5 * Ship.height],
-			[self.pos[0] - Ship.width/2, self.pos[1] + 1/5 * Ship.height]
+			[self.pos[0],   self.pos[1] - 3/5 * Ship.height],
+			[self.pos[0] + Ship.width/2 , self.pos[1] + 2/5 * Ship.height],
+			[self.pos[0] - Ship.width/2, self.pos[1] + 2/5 * Ship.height]
 		]
 		self.init_attack_gear()
 		self.vel = [0, 0]
@@ -34,50 +37,55 @@ class Ship():
 		self.color = (255, 255, 255)
 		self.gun_color = (100, 100, 100)
 		self.laser_color = (255, 0, 0)
+		self.fire_cooldown_count = 0
+		self.coll_ship = coll.Circle(coll.Vector(self.pos[0], self.pos[1]), Ship.height / 2)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
-
+ 
 	def set_y_vel(self, new_y_vel):
 		self.vel[1] = new_y_vel	
 
 	def init_attack_gear(self):
+		"""initiates attack gear when attack mode becomes active"""
+
 		self.r_wing_verts = [
-			[self.pos[0] + Ship.width / 4, self.pos[1]],
-			[self.pos[0] + 5/8 * Ship.width, self.pos[1]],
-			[self.pos[0] + Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+			[self.pos[0] + Ship.width / 4, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] + 5/8 * Ship.width, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] + Ship.width / 8, self.pos[1] - 1/5 * Ship.height]
 		]
 		rotate_vertices(self.r_wing_verts, self.pos, self.dir - math.pi/2)
 		self.l_wing_verts = [
-			[self.pos[0] - Ship.width / 4, self.pos[1]],
-			[self.pos[0] - 5/8 * Ship.width, self.pos[1]],
-			[self.pos[0] - Ship.width / 8, self.pos[1] - 2/5 * Ship.height]
+			[self.pos[0] - Ship.width / 4, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] - 5/8 * Ship.width, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] - Ship.width / 8, self.pos[1] - 1/5 * Ship.height]
 		]
 		rotate_vertices(self.l_wing_verts, self.pos, self.dir - math.pi/2)
 		self.r_gun_verts = [
-			[self.pos[0] + 3/8 * Ship.width, self.pos[1]],
-			[self.pos[0] + Ship.width/2, self.pos[1]],
-			[self.pos[0] + Ship.width/2, self.pos[1] - 3/5 * Ship.height],
-			[self.pos[0] + 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] + Ship.width/2, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] + Ship.width/2, self.pos[1] - 2/5 * Ship.height],
+			[self.pos[0] + 3/8 * Ship.width, self.pos[1] - 2/5 * Ship.height]
 		]
 		rotate_vertices(self.r_gun_verts, self.pos, self.dir - math.pi/2)
 		self.l_gun_verts = [
-			[self.pos[0] - 3/8 * Ship.width, self.pos[1]],
-			[self.pos[0] - Ship.width/2, self.pos[1]],
-			[self.pos[0] - Ship.width/2, self.pos[1] - 3/5 * Ship.height],
-			[self.pos[0] - 3/8 * Ship.width, self.pos[1] - 3/5 * Ship.height]
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] - Ship.width/2, self.pos[1] + 1/5 * Ship.height],
+			[self.pos[0] - Ship.width/2, self.pos[1] - 2/5 * Ship.height],
+			[self.pos[0] - 3/8 * Ship.width, self.pos[1] - 2/5 * Ship.height]
 		]
 		rotate_vertices(self.l_gun_verts, self.pos, self.dir - math.pi/2)
 
-	def update_pos(self):
+	def update_pos(self, x_vel, y_vel):
 		"""updates the position of the ship based on its velocity"""
 
-		self.pos[0] += self.vel[0]
-		self.pos[1] += self.vel[1]
+		self.pos[0] += x_vel
+		self.pos[1] += y_vel
 		def update_vert_pos(vertices):
 			for point in vertices:
-				point[0] += self.vel[0]
-				point[1] += self.vel[1]
+				point[0] += x_vel
+				point[1] += y_vel
+		self.coll_ship.pos = coll.Vector(self.pos[0], self.pos[1])
 
 		update_vert_pos(self.body_verts)
 		if self.attack_mode:
@@ -100,12 +108,14 @@ class Ship():
 			rotate_vertices(self.l_gun_verts, self.pos, self.ang_vel)
 	
 	def draw(self, surface):
-		pygame.draw.polygon(surface, self.color, (self.body_verts[0], self.body_verts[1], self.body_verts[2])) # main body
+		"""draws all parts of the ship"""
+
+		pygame.draw.polygon(surface, self.color, self.body_verts) # main body
 		if self.attack_mode:
-			pygame.draw.polygon(surface, self.gun_color, (self.r_gun_verts[0], self.r_gun_verts[1], self.r_gun_verts[2], self.r_gun_verts[3])) # gun
-			pygame.draw.polygon(surface, self.gun_color, (self.l_gun_verts[0], self.l_gun_verts[1], self.l_gun_verts[2], self.l_gun_verts[3]))
-			pygame.draw.polygon(surface, self.color, (self.r_wing_verts[0], self.r_wing_verts[1], self.r_wing_verts[2])) # wing
-			pygame.draw.polygon(surface, self.color, (self.l_wing_verts[0], self.l_wing_verts[1], self.l_wing_verts[2]))
+			pygame.draw.polygon(surface, self.gun_color, self.r_gun_verts) # guns
+			pygame.draw.polygon(surface, self.gun_color, self.l_gun_verts)
+			pygame.draw.polygon(surface, self.color, self.r_wing_verts) # wings
+			pygame.draw.polygon(surface, self.color, self.l_wing_verts)
 
 class Player_Ship(Ship):
 
@@ -183,9 +193,9 @@ class Player_Ship(Ship):
  
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_LEFT]:
-			self.ang_vel = - math.pi / 10
+			self.ang_vel = - Ship.angular_speed
 		elif keys[pygame.K_RIGHT]:
-			self.ang_vel = math.pi / 10
+			self.ang_vel = Ship.angular_speed
 		else:
 			self.ang_vel = 0
 
@@ -193,16 +203,23 @@ class Player_Ship(Ship):
 		"""fires by initializing a laser object and storing it in the ship's fired lasers"""
 
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_SPACE] and self.attack_mode:
-			Laser_Manager.laser_list.append(Laser(self.r_gun_verts[3][:], self.dir, self.laser_color))
-			Laser_Manager.laser_list.append(Laser(self.l_gun_verts[3][:], self.dir, self.laser_color))
+		if keys[pygame.K_SPACE] and self.attack_mode and self.fire_cooldown_count == 0:
+			#right gun laser instantiation
+			r_laser = Laser(self.r_gun_verts[3][:], self.dir, self.laser_color)
+			Laser_Manager.laser_list.append(r_laser)
+			#left gun laser instantiation
+			l_laser = Laser(self.l_gun_verts[3][:], self.dir, self.laser_color)
+			Laser_Manager.laser_list.append(l_laser)
+			#reset cooldown
+			self.fire_cooldown_count = Player_Ship.fire_cooldown
+		elif self.fire_cooldown_count != 0:
+			self.fire_cooldown_count -= 1
 
-	def update_all(self, field_display):
+	def update_all(self): # (it's the tick function)
 		self.vel_update()
 		self.ang_vel_update()
-		self.update_pos()
+		self.update_pos(self.vel[0], self.vel[1])
 		self.update_dir()
-		self.draw(field_display)
 		self.fire_laser()
 
 class Enemy_Ship(Ship):

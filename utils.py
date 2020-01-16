@@ -1,9 +1,8 @@
-import pygame
 import math
 
-WIDTH = 800
-HEIGHT = 500
-DELAY = 50
+FIELD_WIDTH = 800
+FIELD_HEIGHT = 500
+DELAY = 20
 
 def x_comp(vector_len, angle):
 	"""returns the x component of a vector given its magnitude and direction"""
@@ -24,6 +23,7 @@ def rotate_point(center, point, angle):
 	point[1] = center[1] + diff_x * math.sin(angle) + diff_y * math.cos(angle)
 
 def rotate_vertices(vertices, center, angle):
-	"""rotates all vertices"""
+	"""rotates all vertices in a list of vertices"""
+
 	for point in vertices:
 		rotate_point(center, point, angle)
