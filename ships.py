@@ -38,10 +38,11 @@ class Ship():
 		self.gun_color = (100, 100, 100)
 		self.laser_color = (255, 0, 0)
 		self.fire_cooldown_count = 0
+		self.coll_ship = coll.Circle(coll.Vector(self.pos[0], self.pos[1]), Ship.height / 2)
 
 	def set_x_vel(self, new_x_vel):
 		self.vel[0] = new_x_vel
-
+ 
 	def set_y_vel(self, new_y_vel):
 		self.vel[1] = new_y_vel	
 
@@ -84,6 +85,7 @@ class Ship():
 			for point in vertices:
 				point[0] += self.vel[0]
 				point[1] += self.vel[1]
+		self.coll_ship.pos = coll.Vector(self.pos[0], self.pos[1])
 
 		update_vert_pos(self.body_verts)
 		if self.attack_mode:
@@ -205,13 +207,9 @@ class Player_Ship(Ship):
 			#right gun laser instantiation
 			r_laser = Laser(self.r_gun_verts[3][:], self.dir, self.laser_color)
 			Laser_Manager.laser_list.append(r_laser)
-			collision_r_laser = coll.Circle(coll.Vector(r_laser.pos[0], r_laser.pos[1]), Laser.radius)
-			Laser_Manager.collision_laser_list.append(collision_r_laser)
 			#left gun laser instantiation
 			l_laser = Laser(self.l_gun_verts[3][:], self.dir, self.laser_color)
 			Laser_Manager.laser_list.append(l_laser)
-			collision_l_laser = coll.Circle(coll.Vector(l_laser.pos[0], l_laser.pos[1]), Laser.radius)
-			Laser_Manager.collision_laser_list.append(collision_l_laser)
 			#reset cooldown
 			self.fire_cooldown_count = Player_Ship.fire_cooldown
 		elif self.fire_cooldown_count != 0:

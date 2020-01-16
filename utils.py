@@ -23,7 +23,7 @@ def rotate_point(center, point, angle):
 	point[1] = center[1] + diff_x * math.sin(angle) + diff_y * math.cos(angle)
 
 def rotate_vertices(vertices, center, angle):
-	"""rotates all vertices"""
+	"""rotates all vertices in a list of vertices"""
 
 	for point in vertices:
 		rotate_point(center, point, angle)

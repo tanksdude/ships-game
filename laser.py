@@ -13,6 +13,7 @@ class Laser():
 		self.dir = direction
 		self.vel = [- x_comp(Laser.speed, self.dir), - y_comp(Laser.speed, self.dir)]
 		self.color = color
+		self.coll_laser = coll.Circle(coll.Vector(position[0], position[1]), Laser.radius)
     
 	def update_pos(self):
 		self.pos[0] += self.vel[0]
@@ -29,24 +30,25 @@ class Laser():
 class Laser_Manager():
 
 	laser_list = []
-	collision_laser_list = []
 
 	def update_lasers():
-		for (laser, coll_laser) in zip(Laser_Manager.laser_list, Laser_Manager.collision_laser_list):
+		for laser in Laser_Manager.laser_list:
 			laser.update_pos()
-			coll_laser.pos = coll.Vector(laser.pos[0], laser.pos[1])
+			laser.coll_laser.pos = coll.Vector(laser.pos[0], laser.pos[1])
 			if laser.out_of_bounds():
-				Laser_Manager.remove_laser(laser, coll_laser)
+				Laser_Manager.remove_laser(laser)
 				continue
 
-	def remove_laser(laser, coll_laser):
+	def remove_laser(laser):
 		if laser in Laser_Manager.laser_list:
 			Laser_Manager.laser_list.remove(laser)
-			Laser_Manager.collision_laser_list.remove(coll_laser)
 
 	def draw_all_lasers(surface):
 		for laser in Laser_Manager.laser_list:
 			laser.draw(surface)
+
+	#def add_laser(position, direction, color):
+		#Laser_Manager.
 
 
 

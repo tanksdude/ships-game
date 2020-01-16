@@ -10,18 +10,32 @@ def main():
 	player = Player_Ship(3, [FIELD_WIDTH-50, FIELD_HEIGHT/2], math.pi/2)
 	enemy = Enemy_Ship(3, [100, 100], math.pi/2)
 	field_display = pygame.display.set_mode((FIELD_WIDTH, FIELD_HEIGHT))
+	response = coll.Response()
 
 	def laser_obstacle_collision(): #TODO: move?
-		for (laser, coll_laser) in zip(Laser_Manager.laser_list, Laser_Manager.collision_laser_list):
-			for coll_obstacle in Obstacle_Manager.collision_obstacle_list:
-				if coll.collide(coll_laser, coll_obstacle):
+		"""removes lasers that collide with obstacles"""
+
+		for laser in Laser_Manager.laser_list:
+			for obstacle in Obstacle_Manager.obstacle_list:
+				if coll.collide(laser.coll_laser, obstacle.coll_obstacle):
 					Laser_Manager.laser_list.remove(laser)
-					Laser_Manager.collision_laser_list.remove(coll_laser)
 					break
 
 	def player_obstacle_collision():
-		for coll_obstacle in Obstacle_Manager.collision_obstacle_list:
-			return None
+		"""changes the horizonal or vertical velocity of the ship to 0 """
+		
+		for obstacle in Obstacle_Manager.obstacle_list:
+			if coll.collide(player.coll_ship, obstacle.coll_obstacle, response):
+				if response.overlap_n.x == 1:
+					print("left")
+				elif response.overlap_n.x == -1:
+					print("right")
+				elif response.overlap_n.y == 1:
+					print("top")
+				elif response.overlap_n.y == -1:
+					print("bottom")
+				response.reset()
+				break
 
 	def run_game():
 			"""contains actions of each frame"""
@@ -36,6 +50,7 @@ def main():
 				Laser_Manager.update_lasers()
 				Obstacle_Manager.update_obstacles()
 				laser_obstacle_collision()
+				player_obstacle_collision()
 
 				Laser_Manager.draw_all_lasers(field_display)
 				Obstacle_Manager.draw_all_obstacles(field_display)
@@ -46,7 +61,7 @@ def main():
 			pygame.quit()	
 
 	run_game()
-
+ 
 main()
 
 #.       python3 main.py
