@@ -76,15 +76,15 @@ class Ship():
 		]
 		rotate_vertices(self.l_gun_verts, self.pos, self.dir - math.pi/2)
 
-	def update_pos(self):
+	def update_pos(self, x_vel, y_vel):
 		"""updates the position of the ship based on its velocity"""
 
-		self.pos[0] += self.vel[0]
-		self.pos[1] += self.vel[1]
+		self.pos[0] += x_vel
+		self.pos[1] += y_vel
 		def update_vert_pos(vertices):
 			for point in vertices:
-				point[0] += self.vel[0]
-				point[1] += self.vel[1]
+				point[0] += x_vel
+				point[1] += y_vel
 		self.coll_ship.pos = coll.Vector(self.pos[0], self.pos[1])
 
 		update_vert_pos(self.body_verts)
@@ -218,7 +218,7 @@ class Player_Ship(Ship):
 	def update_all(self): # (it's the tick function)
 		self.vel_update()
 		self.ang_vel_update()
-		self.update_pos()
+		self.update_pos(self.vel[0], self.vel[1])
 		self.update_dir()
 		self.fire_laser()
 

@@ -23,19 +23,16 @@ def main():
 
 	def player_obstacle_collision():
 		"""changes the horizonal or vertical velocity of the ship to 0 """
-		
+		#print("hi")
 		for obstacle in Obstacle_Manager.obstacle_list:
 			if coll.collide(player.coll_ship, obstacle.coll_obstacle, response):
-				if response.overlap_n.x == 1:
-					print("left")
-				elif response.overlap_n.x == -1:
-					print("right")
-				elif response.overlap_n.y == 1:
-					print("top")
-				elif response.overlap_n.y == -1:
-					print("bottom")
+				print(response.overlap_n)
+				print(response.overlap)
+				if response.overlap_n.x:
+					player.update_pos(- abs(response.overlap_n.x) * player.vel[0], 0)
+				if response.overlap_n.y:
+					player.update_pos(0, - abs(response.overlap_n.y) * player.vel[1])
 				response.reset()
-				break
 
 	def run_game():
 			"""contains actions of each frame"""
